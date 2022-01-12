@@ -12,7 +12,10 @@
         android:theme="@style/Theme.BDYR"
         tools:ignore="AllowBackup">
         <activity
-            android:name=".MainActivity"
+            android:name=".Activities.HomeScreen"
+            android:exported="false" />
+        <activity
+            android:name=".Activities.splash"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
