@@ -12,9 +12,12 @@
         android:theme="@style/Theme.BDYR"
         tools:ignore="AllowBackup">
         <activity
-            android:name=".Activities.HomeScreen"
-            android:label="Birthday Reminder"
+            android:name=".Activities.AddEvent"
             android:exported="false" />
+        <activity
+            android:name=".Activities.HomeScreen"
+            android:exported="false"
+            android:label="Birthday Reminder" />
         <activity
             android:name=".Activities.splash"
             android:exported="true">

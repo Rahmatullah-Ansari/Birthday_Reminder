@@ -1,5 +1,6 @@
 package com.android.bdyr.Fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -11,10 +12,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.android.bdyr.Activities.AddEvent;
 import com.android.bdyr.Adapter.EventListAdapter;
 import com.android.bdyr.Holder.EventHolder;
 import com.android.bdyr.R;
 import com.cooltechworks.views.shimmer.ShimmerRecyclerView;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 
@@ -23,12 +26,14 @@ public class BdyList extends Fragment {
     ShimmerRecyclerView recyclerView;
     ArrayList<EventHolder> arrayList;
     EventListAdapter adapter;
+    FloatingActionButton button;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view;
         view=inflater.inflate(R.layout.fragment_bdy_list, container, false);
         refreshLayout =view.findViewById(R.id.swipeRefresh1);
         recyclerView=view.findViewById(R.id.list_rv);
+        button=view.findViewById(R.id.floating_button);
         arrayList=new ArrayList<>();
         adapter=new EventListAdapter(requireActivity(),arrayList);
         recyclerView.setHasFixedSize(true);
@@ -39,7 +44,10 @@ public class BdyList extends Fragment {
             loadEvent();
             refreshLayout.setRefreshing(false);
         });
-
+        button.setOnClickListener(view1 -> {
+            Intent intent=new Intent(requireActivity(), AddEvent.class);
+            startActivity(intent);
+        });
         return view;
     }
 
@@ -48,6 +56,16 @@ public class BdyList extends Fragment {
 
 
         new Handler().postDelayed(() -> recyclerView.hideShimmerAdapter(),1000 );
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        try {
+            loadEvent();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
 }
