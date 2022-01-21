@@ -13,6 +13,7 @@
         tools:ignore="AllowBackup">
         <activity
             android:name=".Activities.HomeScreen"
+            android:label="Birthday Reminder"
             android:exported="false" />
         <activity
             android:name=".Activities.splash"

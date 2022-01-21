@@ -3,4 +3,6 @@
     <string name="birthday_reminder">Birthday Reminder</string>
     <string name="crazy_programmer">Crazy Programmer</string>
     <string name="by">By</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
