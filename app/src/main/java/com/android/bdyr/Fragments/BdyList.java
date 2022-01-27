@@ -14,7 +14,8 @@ import android.view.ViewGroup;
 
 import com.android.bdyr.Activities.AddEvent;
 import com.android.bdyr.Adapter.EventListAdapter;
-import com.android.bdyr.Holder.EventHolder;
+import com.android.bdyr.Database.DatabaseManager;
+import com.android.bdyr.Database.Entities;
 import com.android.bdyr.R;
 import com.cooltechworks.views.shimmer.ShimmerRecyclerView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -24,9 +25,10 @@ import java.util.ArrayList;
 public class BdyList extends Fragment {
     SwipeRefreshLayout refreshLayout;
     ShimmerRecyclerView recyclerView;
-    ArrayList<EventHolder> arrayList;
+    ArrayList<Entities> arrayList;
     EventListAdapter adapter;
     FloatingActionButton button;
+    DatabaseManager databaseManager;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view;
@@ -34,11 +36,12 @@ public class BdyList extends Fragment {
         refreshLayout =view.findViewById(R.id.swipeRefresh1);
         recyclerView=view.findViewById(R.id.list_rv);
         button=view.findViewById(R.id.floating_button);
-        arrayList=new ArrayList<>();
+        arrayList=new ArrayList<com.android.bdyr.Database.Entities>();
         adapter=new EventListAdapter(requireActivity(),arrayList);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(requireActivity()));
         recyclerView.setAdapter(adapter);
+        databaseManager=DatabaseManager.getINSTANCE(requireActivity());
         loadEvent();
         refreshLayout.setOnRefreshListener(() -> {
             loadEvent();
@@ -53,8 +56,8 @@ public class BdyList extends Fragment {
 
     private void loadEvent() {
         recyclerView.showShimmerAdapter();
-
-
+        arrayList.clear();
+        arrayList.addAll(databaseManager.dao().getAllData());
         new Handler().postDelayed(() -> recyclerView.hideShimmerAdapter(),1000 );
     }
 

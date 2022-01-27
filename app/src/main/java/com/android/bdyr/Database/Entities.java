@@ -4,7 +4,7 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
-@Entity
+@Entity(tableName = "EVENTS")
 public class Entities {
     @PrimaryKey(autoGenerate = true)
     private int id;
@@ -18,9 +18,8 @@ public class Entities {
     private String category;
     @ColumnInfo(name = "Wish_Text")
     private String text;
-
-    public Entities(int id,String name, String date, String number, String category, String text) {
-        this.id=id;
+    public Entities(int id, String name, String date, String number, String category, String text) {
+        this.id = id;
         this.name = name;
         this.date = date;
         this.number = number;
