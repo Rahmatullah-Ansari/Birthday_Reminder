@@ -14,7 +14,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.bdyr.Activities.AddEvent;
 import com.android.bdyr.Database.Entities;
-import com.android.bdyr.Holder.EventHolder;
 import com.android.bdyr.R;
 
 import java.util.ArrayList;
@@ -92,7 +91,8 @@ public class EventListAdapter extends RecyclerView.Adapter {
                 }
             }
             String month = months[Integer.parseInt(s.trim())-1];
-            container.date.setText(String.format("%s %s %s , %s",cat,dat.split(":")[0],month,dat.split(":")[2]));
+            String[] a=dat.split(":");
+            container.date.setText(String.format("%s %s %s , %s",cat,a[0],month,a[2]));
             container.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

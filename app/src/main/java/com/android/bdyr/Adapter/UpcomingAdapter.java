@@ -1,25 +1,36 @@
 package com.android.bdyr.Adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
-import com.android.bdyr.Holder.EventHolder;
+import com.android.bdyr.Database.Entities;
 import com.android.bdyr.R;
 
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class UpcomingAdapter extends RecyclerView.Adapter {
     int count=0;
     Context context;
-    ArrayList<EventHolder> arrayList;
+    ArrayList<Entities> arrayList;
     int empty=0,not_empty=1;
+    String[] months;
 
-    public UpcomingAdapter(Context context, ArrayList<EventHolder> arrayList) {
+    {
+        months = new String[]{ "Jan", "Feb", "Mar", "April", "May", "June", "July", "Aug", "Sep", "Oct", "Nov", "Dec" };
+    }
+    public UpcomingAdapter(Context context, ArrayList<Entities> arrayList) {
         this.context = context;
         this.arrayList = arrayList;
     }
@@ -36,12 +47,62 @@ public class UpcomingAdapter extends RecyclerView.Adapter {
         }
     }
 
+    @SuppressLint ("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         if (holder.getClass() == Empty.class){
             Empty container=(Empty) holder;
         }else if (holder.getClass() == Not_empty.class){
             Not_empty container=(Not_empty) holder;
+            container.flag.setVisibility(View.VISIBLE);
+            String cat=arrayList.get(position).getCategory();
+            String nam=arrayList.get(position).getName();
+            String num=arrayList.get(position).getNumber();
+            String dat=arrayList.get(position).getDate();
+            String text=arrayList.get(position).getText();
+            container.name.setText(nam);
+            String[] date=dat.split(":");
+            String[] current=getCurrentDate().split(":");
+            if (current[0].equals(date[0].trim())){
+                container.flag.setText("Today");
+            }else {
+                container.flag.setText("Upcoming");
+            }
+            String s=date[1];
+            if (s.startsWith("0")){
+                switch (s) {
+                    case "01":
+                        s = "1";
+                        break;
+                    case "02":
+                        s = "2";
+                        break;
+                    case "03":
+                        s = "3";
+                        break;
+                    case "04":
+                        s = "4";
+                        break;
+                    case "05":
+                        s = "5";
+                        break;
+                    case "06":
+                        s = "6";
+                        break;
+                    case "07":
+                        s = "7";
+                        break;
+                    case "08":
+                        s = "8";
+                        break;
+                    case "09":
+                        s = "9";
+                        break;
+                }
+            }
+            String month = months[Integer.parseInt(s.trim())-1];
+            String[] a=dat.split(":");
+            container.date.setText(String.format("%s %s %s , %s",cat,a[0],month,a[2]));
         }
     }
 
@@ -55,7 +116,16 @@ public class UpcomingAdapter extends RecyclerView.Adapter {
             return count;
         }
     }
-
+    public static String getCurrentDate() {
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            //Log.d(TAG, "getCurrentDateTime: greater than O");
+            return LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd:MM:yyyy"));
+        } else {
+            //Log.d(TAG, "getCurrentDateTime: less than O");
+            @SuppressLint ("SimpleDateFormat") SimpleDateFormat SDFormat = new SimpleDateFormat("dd:MM:yyyy");
+            return SDFormat.format(new Date());
+        }
+    }
     @Override
     public int getItemViewType(int position) {
         if(count == -1){
@@ -72,9 +142,16 @@ public class UpcomingAdapter extends RecyclerView.Adapter {
 
     }
     public static class Not_empty extends RecyclerView.ViewHolder{
-
+        TextView name,flag,date;
+        ImageView whatsApp,Call,Message;
         public Not_empty(@NonNull View itemView) {
             super(itemView);
+            name=itemView.findViewById(R.id.name);
+            flag=itemView.findViewById(R.id.flag);
+            date=itemView.findViewById(R.id.date);
+            whatsApp=itemView.findViewById(R.id.whatsapp);
+            Call=itemView.findViewById(R.id.call);
+            Message=itemView.findViewById(R.id.message);
         }
 
     }
