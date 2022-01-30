@@ -7,7 +7,9 @@ import androidx.room.PrimaryKey;
 @Entity(tableName = "EVENTS")
 public class Entities {
     @PrimaryKey(autoGenerate = true)
-    private int id;
+    int I;
+    @ColumnInfo(name = "Id")
+    private String id;
     @ColumnInfo(name = "Name")
     private String name;
     @ColumnInfo(name = "Date")
@@ -18,7 +20,7 @@ public class Entities {
     private String category;
     @ColumnInfo(name = "Wish_Text")
     private String text;
-    public Entities(int id, String name, String date, String number, String category, String text) {
+    public Entities(String id, String name, String date, String number, String category, String text) {
         this.id = id;
         this.name = name;
         this.date = date;
@@ -27,11 +29,19 @@ public class Entities {
         this.text = text;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public int getI() {
+        return I;
+    }
+
+    public void setI(int i) {
+        I = i;
+    }
+
+    public void setId(String id) {
         this.id = id;
     }
 

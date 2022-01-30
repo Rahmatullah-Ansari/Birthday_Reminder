@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.bdyr.Activities.AddEvent;
 import com.android.bdyr.Database.Entities;
+import com.android.bdyr.Handlers;
 import com.android.bdyr.R;
 
 import java.util.ArrayList;
@@ -93,23 +94,34 @@ public class EventListAdapter extends RecyclerView.Adapter {
             String month = months[Integer.parseInt(s.trim())-1];
             String[] a=dat.split(":");
             container.date.setText(String.format("%s %s %s , %s",cat,a[0],month,a[2]));
-            container.itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    String cat=arrayList.get(position).getCategory();
-                    String nam=arrayList.get(position).getName();
-                    String num=arrayList.get(position).getNumber();
-                    String dat=arrayList.get(position).getDate();
-                    String text=arrayList.get(position).getText();
-                    Intent intent=new Intent(context, AddEvent.class);
-                    intent.putExtra("cat",cat);
-                    intent.putExtra("nam",nam);
-                    intent.putExtra("dat",dat);
-                    intent.putExtra("num",num);
-                    intent.putExtra("text",text);
-                    intent.putExtra("flag",true);
-                    context.startActivity(intent);
-                }
+            container.itemView.setOnClickListener(view -> {
+                String cat1 =arrayList.get(position).getCategory();
+                String nam1 =arrayList.get(position).getName();
+                String num1 =arrayList.get(position).getNumber();
+                String dat1 =arrayList.get(position).getDate();
+                String text1 =arrayList.get(position).getText();
+                String id=arrayList.get(position).getId();
+                Intent intent=new Intent(context, AddEvent.class);
+                intent.putExtra("cat", cat1);
+                intent.putExtra("nam", nam1);
+                intent.putExtra("dat", dat1);
+                intent.putExtra("num", num1);
+                intent.putExtra("text", text1);
+                intent.putExtra("id",id);
+                intent.putExtra("flag",true);
+                context.startActivity(intent);
+            });
+            container.whatsApp.setOnClickListener(view -> {
+                Handlers handlers=new Handlers(context);
+                handlers.openWhatsApp(arrayList.get(position).getNumber(),arrayList.get(position).getText());
+            });
+            container.Call.setOnClickListener(view -> {
+                Handlers handlers=new Handlers(context);
+                handlers.makeCall(arrayList.get(position).getNumber());
+            });
+            container.Message.setOnClickListener(view -> {
+                Handlers handlers=new Handlers(context);
+                handlers.openMessenger(arrayList.get(position).getNumber(),arrayList.get(position).getText());
             });
         }
     }

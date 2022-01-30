@@ -7,11 +7,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.android.bdyr.Database.Entities;
+import com.android.bdyr.Handlers;
 import com.android.bdyr.R;
 
 import java.text.SimpleDateFormat;
@@ -64,8 +66,10 @@ public class UpcomingAdapter extends RecyclerView.Adapter {
             String[] date=dat.split(":");
             String[] current=getCurrentDate().split(":");
             if (current[0].equals(date[0].trim())){
+                container.relativeLayout.setBackgroundResource(R.drawable.item_bg_3);
                 container.flag.setText("Today");
             }else {
+                container.relativeLayout.setBackgroundResource(R.drawable.item_bg);
                 container.flag.setText("Upcoming");
             }
             String s=date[1];
@@ -103,6 +107,18 @@ public class UpcomingAdapter extends RecyclerView.Adapter {
             String month = months[Integer.parseInt(s.trim())-1];
             String[] a=dat.split(":");
             container.date.setText(String.format("%s %s %s , %s",cat,a[0],month,a[2]));
+            container.whatsApp.setOnClickListener(view -> {
+                Handlers handlers=new Handlers(context);
+                handlers.openWhatsApp(arrayList.get(position).getNumber(),arrayList.get(position).getText());
+            });
+            container.Call.setOnClickListener(view -> {
+                Handlers handlers=new Handlers(context);
+                handlers.makeCall(arrayList.get(position).getNumber());
+            });
+            container.Message.setOnClickListener(view -> {
+                Handlers handlers=new Handlers(context);
+                handlers.openMessenger(arrayList.get(position).getNumber(),arrayList.get(position).getText());
+            });
         }
     }
 
@@ -144,6 +160,7 @@ public class UpcomingAdapter extends RecyclerView.Adapter {
     public static class Not_empty extends RecyclerView.ViewHolder{
         TextView name,flag,date;
         ImageView whatsApp,Call,Message;
+        RelativeLayout relativeLayout;
         public Not_empty(@NonNull View itemView) {
             super(itemView);
             name=itemView.findViewById(R.id.name);
@@ -152,6 +169,7 @@ public class UpcomingAdapter extends RecyclerView.Adapter {
             whatsApp=itemView.findViewById(R.id.whatsapp);
             Call=itemView.findViewById(R.id.call);
             Message=itemView.findViewById(R.id.message);
+            relativeLayout=itemView.findViewById(R.id.relativeLayout);
         }
 
     }

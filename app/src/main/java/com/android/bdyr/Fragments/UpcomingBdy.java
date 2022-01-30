@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +21,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 
 public class UpcomingBdy extends Fragment {
@@ -52,9 +54,11 @@ public class UpcomingBdy extends Fragment {
         DatabaseManager databaseManager=DatabaseManager.getINSTANCE(requireActivity());
         ArrayList<Entities> temp = new ArrayList<>(databaseManager.dao().getAllData());
         String[] current_date=getCurrentDate().split(":");
+        Log.e("Date = ", Arrays.toString(current_date));
         for (Entities entities:temp){
             String date=entities.getDate();
             String[] array =date.split(":");
+            Log.e("Date1 = ", Arrays.toString(array));
             if (current_date[1].equals(array[1].trim())){
                 arrayList.add(entities);
             }

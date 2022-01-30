@@ -17,8 +17,8 @@ public interface DAO {
     void deleteAllData(Entities entities);
     @Delete
     void delete(ArrayList<Entities> entities);
-    @Query("UPDATE EVENTS SET Name = :bName ,Date =:bDate,Number =:bNumber ,Category =:bCat,Wish_Text =:bWish")
-    void update(String bName,String bDate,String bNumber,String bCat,String bWish);
+    @Query("UPDATE EVENTS SET Name = :bName ,Date =:bDate,Number =:bNumber ,Category =:bCat,Wish_Text =:bWish WHERE Id =:bId")
+    void update(String bName,String bDate,String bNumber,String bCat,String bWish,String bId);
     @Query("SELECT * FROM EVENTS WHERE id = :sId")
     int getId(int sId);
 }

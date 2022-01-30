@@ -15,6 +15,7 @@ import com.android.bdyr.Database.Entities;
 import com.android.bdyr.databinding.ActivityAddEventBinding;
 
 import java.util.Calendar;
+import java.util.UUID;
 
 public class AddEvent extends AppCompatActivity {
     ActivityAddEventBinding binding;
@@ -30,7 +31,9 @@ public class AddEvent extends AppCompatActivity {
         int year=calendar.get(Calendar.YEAR);
         int month=calendar.get(Calendar.MONTH);
         int day=calendar.get(Calendar.DAY_OF_MONTH);
-        if (getIntent().getBooleanExtra("flag",false)){
+        boolean value=getIntent().getBooleanExtra("flag",false);
+        String id=getIntent().getStringExtra("id");
+        if (value){
             setTitle("Update");
             name=getIntent().getStringExtra("nam");
             number=getIntent().getStringExtra("num");
@@ -88,7 +91,7 @@ public class AddEvent extends AppCompatActivity {
                 category="";
             }
             name=binding.nameLabel.getText().toString();
-            date=binding.dateLabel.getText().toString().trim();
+            date=binding.dateLabel.getText().toString();
             text=binding.wishLabel.getText().toString();
             number=binding.numberLabel.getText().toString();
             if (category.equals("")){
@@ -99,14 +102,17 @@ public class AddEvent extends AppCompatActivity {
                 Toast.makeText(AddEvent.this, "enter valid number", Toast.LENGTH_SHORT).show();
             }else if (text.equals("")){
                 Toast.makeText(AddEvent.this, "enter wish text", Toast.LENGTH_SHORT).show();
-            }else {
+            }
+            else if (value){
+                DatabaseManager manager=DatabaseManager.getINSTANCE(AddEvent.this);
+                manager.dao().update(name,date,number,category,text,id);
+                Toast.makeText(AddEvent.this, "Updated successfully!", Toast.LENGTH_SHORT).show();
+                new Handler().postDelayed(this::finish, 800);
+            }
+            else {
                 Entities data;
-                int Id=databaseManager.dao().getId(0);
-                if (Id == 0){
-                    data=new Entities(0,name,date,number,category,text);
-                }else {
-                    data=new Entities(Id+1,name,date,number,category,text);
-                }
+                String Id= UUID.randomUUID().toString();
+                data=new Entities(Id,name,date,number,category,text);
                 databaseManager.dao().insertData(data);
                 Toast.makeText(AddEvent.this, "Event added successfully!", Toast.LENGTH_SHORT).show();
                 new Handler().postDelayed(this::finish, 800);
