@@ -1,7 +1,9 @@
 package com.android.bdyr.Adapter;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +15,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.bdyr.Activities.AddEvent;
+import com.android.bdyr.Database.DatabaseManager;
 import com.android.bdyr.Database.Entities;
 import com.android.bdyr.Handlers;
 import com.android.bdyr.R;
@@ -45,6 +48,7 @@ public class EventListAdapter extends RecyclerView.Adapter {
         }
     }
 
+    @SuppressLint ("NotifyDataSetChanged")
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, @SuppressLint ("RecyclerView") int position) {
         if (holder.getClass() == Empty.class){
@@ -122,6 +126,19 @@ public class EventListAdapter extends RecyclerView.Adapter {
             container.Message.setOnClickListener(view -> {
                 Handlers handlers=new Handlers(context);
                 handlers.openMessenger(arrayList.get(position).getNumber(),arrayList.get(position).getText());
+            });
+            container.itemView.setOnLongClickListener(view -> {
+                new AlertDialog.Builder(context)
+                        .setCancelable(false)
+                        .setMessage("Do you want to delete ?")
+                        .setPositiveButton("YES", (dialogInterface, i) -> {
+                            DatabaseManager manager=DatabaseManager.getINSTANCE(context);
+                            manager.dao().deleteAllData(arrayList.get(position));
+                            arrayList.clear();
+                            arrayList.addAll(manager.dao().getAllData());
+                            dialogInterface.dismiss();
+                        }).setNegativeButton("NO", (dialogInterface, i) -> dialogInterface.dismiss()).show();
+                return false;
             });
         }
     }
