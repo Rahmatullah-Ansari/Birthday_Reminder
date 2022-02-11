@@ -3,12 +3,10 @@ package com.android.bdyr.Fragments;
 import android.annotation.SuppressLint;
 import android.os.Build;
 import android.os.Bundle;
-
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import android.os.Handler;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,7 +19,6 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 
 public class UpcomingBdy extends Fragment {
@@ -49,22 +46,24 @@ public class UpcomingBdy extends Fragment {
 
     @SuppressLint ("NotifyDataSetChanged")
     private void loadUpcomingEvent() {
-        recyclerView.showShimmerAdapter();
-        arrayList.clear();
-        DatabaseManager databaseManager=DatabaseManager.getINSTANCE(requireActivity());
-        ArrayList<Entities> temp = new ArrayList<>(databaseManager.dao().getAllData());
-        String[] current_date=getCurrentDate().split(":");
-        Log.e("Date = ", Arrays.toString(current_date));
-        for (Entities entities:temp){
-            String date=entities.getDate();
-            String[] array =date.split(":");
-            Log.e("Date1 = ", Arrays.toString(array));
-            if (current_date[1].equals(array[1].trim())){
-                arrayList.add(entities);
+        try {
+            recyclerView.showShimmerAdapter();
+            arrayList.clear();
+            DatabaseManager databaseManager=DatabaseManager.getINSTANCE(requireActivity());
+            ArrayList<Entities> temp = new ArrayList<>(databaseManager.dao().getAllData());
+            String[] current_date=getCurrentDate().split(":");
+            for (Entities entities:temp){
+                String date=entities.getDate();
+                String[] array =date.split(":");
+                if (current_date[1].equals(array[1].trim()) && (Integer.parseInt(current_date[0]) <= Integer.parseInt(array[0].trim()))){
+                    arrayList.add(entities);
+                }
             }
+            adapter.notifyDataSetChanged();
+            new Handler().postDelayed(() -> recyclerView.hideShimmerAdapter(),1000 );
+        }catch (Exception e){
+            e.printStackTrace();
         }
-        adapter.notifyDataSetChanged();
-        new Handler().postDelayed(() -> recyclerView.hideShimmerAdapter(),1000 );
     }
     public static String getCurrentDate() {
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

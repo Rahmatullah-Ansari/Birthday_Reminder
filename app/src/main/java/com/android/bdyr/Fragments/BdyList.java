@@ -39,8 +39,8 @@ public class BdyList extends Fragment {
         refreshLayout =view.findViewById(R.id.swipeRefresh1);
         recyclerView=view.findViewById(R.id.list_rv);
         button=view.findViewById(R.id.floating_button);
-        arrayList=new ArrayList<com.android.bdyr.Database.Entities>();
-        adapter=new EventListAdapter(requireActivity(),arrayList);
+        arrayList= new ArrayList<>();
+        adapter=new EventListAdapter(requireActivity(),arrayList,BdyList.this);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(requireActivity()));
         recyclerView.setAdapter(adapter);
@@ -57,7 +57,7 @@ public class BdyList extends Fragment {
         return view;
     }
 
-    private void loadEvent() {
+    public void loadEvent() {
         recyclerView.showShimmerAdapter();
         arrayList.clear();
         arrayList.addAll(databaseManager.dao().getAllData());

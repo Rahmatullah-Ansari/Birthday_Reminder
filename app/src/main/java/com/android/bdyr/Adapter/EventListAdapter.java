@@ -3,7 +3,6 @@ package com.android.bdyr.Adapter;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.android.bdyr.Activities.AddEvent;
 import com.android.bdyr.Database.DatabaseManager;
 import com.android.bdyr.Database.Entities;
+import com.android.bdyr.Fragments.BdyList;
 import com.android.bdyr.Handlers;
 import com.android.bdyr.R;
 
@@ -27,13 +27,14 @@ public class EventListAdapter extends RecyclerView.Adapter {
     ArrayList<Entities> arrayList;
     int count=0,empty=1,not_empty=2;
     String[] months;
-
+    BdyList listener;
     {
         months = new String[]{ "Jan", "Feb", "Mar", "April", "May", "June", "July", "Aug", "Sep", "Oct", "Nov", "Dec" };
     }
-    public EventListAdapter(Context context, ArrayList<Entities> arrayList) {
+    public EventListAdapter(Context context, ArrayList<Entities> arrayList, BdyList bdyList) {
         this.context = context;
         this.arrayList = arrayList;
+        this.listener=bdyList;
     }
 
     @NonNull
@@ -134,9 +135,8 @@ public class EventListAdapter extends RecyclerView.Adapter {
                         .setPositiveButton("YES", (dialogInterface, i) -> {
                             DatabaseManager manager=DatabaseManager.getINSTANCE(context);
                             manager.dao().deleteAllData(arrayList.get(position));
-                            arrayList.clear();
-                            arrayList.addAll(manager.dao().getAllData());
                             dialogInterface.dismiss();
+                            listener.loadEvent();
                         }).setNegativeButton("NO", (dialogInterface, i) -> dialogInterface.dismiss()).show();
                 return false;
             });

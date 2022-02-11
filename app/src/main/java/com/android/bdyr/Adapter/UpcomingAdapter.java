@@ -1,7 +1,15 @@
 package com.android.bdyr.Adapter;
 
+import static android.content.Context.NOTIFICATION_SERVICE;
+
 import android.annotation.SuppressLint;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.app.TaskStackBuilder;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,7 +19,11 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.android.bdyr.Activities.HomeScreen;
 import com.android.bdyr.Database.Entities;
 import com.android.bdyr.Handlers;
 import com.android.bdyr.R;
@@ -49,7 +61,7 @@ public class UpcomingAdapter extends RecyclerView.Adapter {
         }
     }
 
-    @SuppressLint ("SetTextI18n")
+    @SuppressLint ({ "SetTextI18n", "DefaultLocale" })
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         if (holder.getClass() == Empty.class){
@@ -65,12 +77,19 @@ public class UpcomingAdapter extends RecyclerView.Adapter {
             container.name.setText(nam);
             String[] date=dat.split(":");
             String[] current=getCurrentDate().split(":");
+            int day=Integer.parseInt(date[0].trim())-Integer.parseInt(current[0]);
             if (current[0].equals(date[0].trim())){
                 container.relativeLayout.setBackgroundResource(R.drawable.item_bg_3);
                 container.flag.setText("Today");
-            }else {
+                popUpNotification(container);
+            }
+            else if (day == 1){
                 container.relativeLayout.setBackgroundResource(R.drawable.item_bg);
-                container.flag.setText("Upcoming");
+                container.flag.setText("Tomorrow");
+            }
+            else {
+                container.relativeLayout.setBackgroundResource(R.drawable.item_bg);
+                container.flag.setText(String.format("%d days to go",day-1));
             }
             String s=date[1];
             if (s.startsWith("0")){
@@ -120,6 +139,29 @@ public class UpcomingAdapter extends RecyclerView.Adapter {
                 handlers.openMessenger(arrayList.get(position).getNumber(),arrayList.get(position).getText());
             });
         }
+    }
+
+    private void popUpNotification(Not_empty holder) {
+        String name=arrayList.get(holder.getAdapterPosition()).getName();
+        NotificationCompat.Builder builder=new NotificationCompat.Builder(context, String.valueOf(123));
+        Intent intent=new Intent(context, HomeScreen.class);
+        TaskStackBuilder stackBuilder=TaskStackBuilder.create(context);
+        stackBuilder.addNextIntentWithParentStack(intent);
+        PendingIntent pendingIntent=stackBuilder.getPendingIntent(0,PendingIntent.FLAG_UPDATE_CURRENT);
+        builder.setContentIntent(pendingIntent);
+        builder.setSmallIcon(R.drawable.bdy);
+        builder.setContentTitle(name + " birthday today,wish them!");
+        builder.setAutoCancel(true);
+        builder.setPriority(Notification.PRIORITY_DEFAULT);
+        Notification notification=builder.build();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+            NotificationChannel channel=new NotificationChannel("123","my notification", NotificationManager.IMPORTANCE_DEFAULT);
+            //channel.setDescription("My notification");
+            NotificationManager manager=(NotificationManager)context.getSystemService(NOTIFICATION_SERVICE);
+            manager.createNotificationChannel(channel);
+        }
+        NotificationManagerCompat compat = NotificationManagerCompat.from(context);
+        compat.notify(123,notification);
     }
 
     @Override
