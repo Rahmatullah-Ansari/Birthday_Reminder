@@ -1,6 +1,7 @@
 package com.android.bdyr.Activities;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.core.app.ActivityCompat;
@@ -13,8 +14,10 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -26,6 +29,7 @@ import com.android.bdyr.R;
 import com.android.bdyr.databinding.ActivityHomeScreenBinding;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.nio.channels.FileChannel;
 
@@ -131,6 +135,13 @@ public class HomeScreen extends AppCompatActivity {
                         }).setNeutralButton("Cancel", (dialogInterface, i) -> dialogInterface.dismiss()).show();
                 break;
             case R.id.importEvent:
+                Intent intent=new Intent(Intent.ACTION_GET_CONTENT);
+                intent.setType("*/*");
+                try {
+                    startActivityForResult(Intent.createChooser(intent,"Select database file"),22);
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -163,6 +174,7 @@ public class HomeScreen extends AppCompatActivity {
     private void saveOnDevice() {
         try {
             String path=getDatabasePath("EVENTS").getAbsolutePath();
+            Log.e("Path=",path);
             File db=new File(path);
             File f= new File(Environment.getExternalStorageDirectory() + File.separator + "Birthday Reminder");
             if (!f.exists() && !f.isDirectory()){
@@ -177,7 +189,7 @@ public class HomeScreen extends AppCompatActivity {
                 file.delete();
             }
             file.createNewFile();
-            if (copyFile(new FileInputStream(db),new FileOutputStream(file))){
+            if (copyFile(new FileInputStream(db),new FileOutputStream(file),false)){
                 Toast.makeText(HomeScreen.this, "saved on location == "+folder, Toast.LENGTH_SHORT).show();
             }
         }catch (Exception e){
@@ -185,7 +197,23 @@ public class HomeScreen extends AppCompatActivity {
         }
     }
 
-    private boolean copyFile(FileInputStream fis, FileOutputStream fos) {
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 22){
+            if (resultCode == RESULT_OK){
+                Uri source=data.getData();
+                @SuppressLint ("SdCardPath") String des="/data/user/0/com.android.bdyr/databases/EVENTS.db";
+                try {
+                    copyFile(new FileInputStream(String.valueOf(source)),new FileOutputStream(des),true);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    private boolean copyFile(FileInputStream fis, FileOutputStream fos,boolean value) {
         FileChannel from=null;
         FileChannel to=null;
         boolean val=false;
@@ -197,6 +225,10 @@ public class HomeScreen extends AppCompatActivity {
         }catch (Exception e){
             e.printStackTrace();
             val=false;
+        }
+        if (value){
+            BdyList fragment=(BdyList) binding.viewPager.getAdapter().instantiateItem(binding.viewPager,1);
+            fragment.loadEvent();
         }
         return val;
     }
