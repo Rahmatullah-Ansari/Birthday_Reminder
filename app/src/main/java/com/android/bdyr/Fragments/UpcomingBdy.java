@@ -75,4 +75,21 @@ public class UpcomingBdy extends Fragment {
             return SDFormat.format(new Date());
         }
     }
+
+    @SuppressLint ("NotifyDataSetChanged")
+    public void search(String text) {
+        ArrayList<Entities> temp=new ArrayList<>();
+        if (text.isEmpty()){
+            temp.addAll(arrayList);
+        }else {
+            for (Entities entities:arrayList){
+                if (entities.getName().toLowerCase().contains(text)){
+                    temp.add(entities);
+                }
+            }
+        }
+        adapter.updateList(temp);
+        adapter.notifyDataSetChanged();
+    }
+
 }

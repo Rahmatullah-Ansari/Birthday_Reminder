@@ -1,5 +1,6 @@
 package com.android.bdyr.Fragments;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -20,9 +21,6 @@ import com.android.bdyr.Database.Entities;
 import com.android.bdyr.R;
 import com.cooltechworks.views.shimmer.ShimmerRecyclerView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-
-import java.io.File;
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 
 public class BdyList extends Fragment {
@@ -72,6 +70,22 @@ public class BdyList extends Fragment {
         }catch (Exception e){
             e.printStackTrace();
         }
+    }
+
+    @SuppressLint ("NotifyDataSetChanged")
+    public void search(String text) {
+        ArrayList<Entities> temp=new ArrayList<>();
+        if (text.isEmpty()){
+            temp.addAll(arrayList);
+        }else {
+            for (Entities entities:arrayList){
+                if (entities.getName().toLowerCase().contains(text)){
+                    temp.add(entities);
+                }
+            }
+        }
+        adapter.updateList(temp);
+        adapter.notifyDataSetChanged();
     }
 
 }

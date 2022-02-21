@@ -192,6 +192,11 @@ public class UpcomingAdapter extends RecyclerView.Adapter {
             return not_empty;
         }
     }
+
+    public void updateList(ArrayList<Entities> temp) {
+        arrayList=temp;
+    }
+
     public static class Empty extends RecyclerView.ViewHolder{
 
         public Empty(@NonNull View itemView) {

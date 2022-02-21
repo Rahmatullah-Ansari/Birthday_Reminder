@@ -3,12 +3,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.android.bdyr">
     <uses-permission android:name="android.permission.CALL_PHONE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        tools:ignore="ScopedStorage" />
     <application
         android:allowBackup="true"
         android:icon="@drawable/bdy"
         android:label="@string/app_name"
         android:roundIcon="@drawable/bdy"
         android:supportsRtl="true"
+        android:requestLegacyExternalStorage="true"
         android:theme="@style/Theme.BDYR"
         tools:ignore="AllowBackup">
         <activity
@@ -27,6 +31,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <provider
+            android:authorities="com.android.bdyr.Activities.HomeScreen.provider"
+            android:name="androidx.core.content.FileProvider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/path_provider"/>
+        </provider>
     </application>
 
 </manifest>
