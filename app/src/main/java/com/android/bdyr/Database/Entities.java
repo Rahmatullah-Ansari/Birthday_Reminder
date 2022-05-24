@@ -29,6 +29,8 @@ public class Entities {
         this.text = text;
     }
 
+    public Entities() {
+    }
     public String getId() {
         return id;
     }

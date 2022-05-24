@@ -1,9 +1,11 @@
 package com.android.bdyr.Fragments;
 
 import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -21,6 +23,12 @@ import com.android.bdyr.Database.Entities;
 import com.android.bdyr.R;
 import com.cooltechworks.views.shimmer.ShimmerRecyclerView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
 import java.util.ArrayList;
 
 public class BdyList extends Fragment {
@@ -30,10 +38,12 @@ public class BdyList extends Fragment {
     EventListAdapter adapter;
     FloatingActionButton button;
     DatabaseManager databaseManager;
+    DatabaseReference reference;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view;
         view=inflater.inflate(R.layout.fragment_bdy_list, container, false);
+        reference= FirebaseDatabase.getInstance().getReference("Bdyr");
         refreshLayout =view.findViewById(R.id.swipeRefresh1);
         recyclerView=view.findViewById(R.id.list_rv);
         button=view.findViewById(R.id.floating_button);
@@ -86,6 +96,54 @@ public class BdyList extends Fragment {
         }
         adapter.updateList(temp);
         adapter.notifyDataSetChanged();
+    }
+
+    public void backup() {
+        ProgressDialog dialog=new ProgressDialog(requireActivity());
+        dialog.setTitle("Backup");
+        dialog.setMessage("Backing Up....");
+        dialog.setCancelable(false);
+        if (arrayList.size() > 0){
+            dialog.show();
+            for (Entities entities:arrayList){
+                String number=entities.getNumber();
+                reference.child(number).setValue(entities);
+            }
+            dialog.dismiss();
+            Toast.makeText(requireActivity(), "Backup successful", Toast.LENGTH_SHORT).show();
+        }else{
+            Toast.makeText(requireActivity(), "Nothing is to backup!", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public void restore() {
+        ProgressDialog dialog=new ProgressDialog(requireActivity());
+        dialog.setTitle("Restore");
+        dialog.setMessage("Restoring....");
+        dialog.setCancelable(false);
+        reference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()){
+                    dialog.show();
+                    arrayList.clear();
+                    DatabaseManager manager=DatabaseManager.getINSTANCE(requireActivity());
+                    for (DataSnapshot dataSnapshot:snapshot.getChildren()){
+                        Entities entities=dataSnapshot.getValue(Entities.class);
+                        manager.dao().insertData(entities);
+                    }
+                    dialog.dismiss();
+                    Toast.makeText(requireActivity(), "Restore successful", Toast.LENGTH_SHORT).show();
+                }else{
+                    Toast.makeText(requireActivity(), "Sorry no backup found!", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 
 }
