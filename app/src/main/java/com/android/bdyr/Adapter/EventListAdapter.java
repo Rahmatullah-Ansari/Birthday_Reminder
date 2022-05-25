@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,8 +21,9 @@ import com.android.bdyr.Database.Entities;
 import com.android.bdyr.Fragments.BdyList;
 import com.android.bdyr.Handlers;
 import com.android.bdyr.R;
-
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class EventListAdapter extends RecyclerView.Adapter {
     Context context;
@@ -32,6 +34,10 @@ public class EventListAdapter extends RecyclerView.Adapter {
     {
         months = new String[]{ "Jan", "Feb", "Mar", "April", "May", "June", "July", "Aug", "Sep", "Oct", "Nov", "Dec" };
     }
+    //for timer
+    Handler handler=new Handler();
+    Runnable runnable;
+    String DATE_FORMAT="dd:MM:yyyy HH:mm:ss";
     public EventListAdapter(Context context, ArrayList<Entities> arrayList, BdyList bdyList) {
         this.context = context;
         this.arrayList = arrayList;
@@ -63,7 +69,6 @@ public class EventListAdapter extends RecyclerView.Adapter {
             String nam=arrayList.get(position).getName();
             String num=arrayList.get(position).getNumber();
             String dat=arrayList.get(position).getDate();
-            Log.d("date=",dat);
             String text=arrayList.get(position).getText();
             container.name.setText(nam);
             String s=dat.split(":")[1];
@@ -101,6 +106,9 @@ public class EventListAdapter extends RecyclerView.Adapter {
             String month = months[Integer.parseInt(s.trim())-1];
             String[] a=dat.split(":");
             container.date.setText(String.format("%s %s %s , %s",cat,a[0],month,a[2]));
+            //for timer.
+            String EVENT_DATE_TIME=dat.replace(" ","")+" 12:00:00";
+            showCount(container,EVENT_DATE_TIME,position);
             container.itemView.setOnClickListener(view -> {
                 String cat1 =arrayList.get(position).getCategory();
                 String nam1 =arrayList.get(position).getName();
@@ -145,6 +153,39 @@ public class EventListAdapter extends RecyclerView.Adapter {
         }
     }
 
+    private void showCount(Not_empty container, String EVENT_DATE_TIME, int position) {
+        runnable=new Runnable() {
+            @SuppressLint ("DefaultLocale")
+            @Override
+            public void run() {
+                try {
+                    handler.postDelayed(this,1000);
+                    @SuppressLint ("SimpleDateFormat") SimpleDateFormat dateFormat=new SimpleDateFormat(DATE_FORMAT);
+                    Date event_date=dateFormat.parse(EVENT_DATE_TIME);
+                    Date current_date=new Date();
+                    Log.d("date =", String.valueOf(current_date));
+                    if (!current_date.after(event_date)){
+                        container.time.setVisibility(View.VISIBLE);
+                        long diff=event_date.getTime()-current_date.getTime();
+                        long days=diff/(24*60*60*1000);
+                        long Hours=diff/(60*60*1000) % 24;
+                        long Minutes=diff/(60*1000) % 60;
+                        long Second=diff/1000 % 60;
+                        container.time.setText(String.format("%02d ,%02d,%02d, %02d",days,Hours,Minutes,Second));
+                    }else{
+                        //Handlers handlers=new Handlers(context);
+                        //handlers.openWhatsApp(arrayList.get(position).getNumber(),arrayList.get(position).getText());
+                        handler.removeCallbacks(runnable);
+                        container.time.setText("");
+                        container.time.setVisibility(View.GONE);
+                    }
+                }catch (Exception e){
+                    Log.e("Error ====",e.getLocalizedMessage());
+                }
+            }
+        };
+        handler.postDelayed(runnable,0);
+    }
     @Override
     public int getItemCount() {
         if (arrayList.size() == 0){
@@ -178,7 +219,7 @@ public class EventListAdapter extends RecyclerView.Adapter {
 
     }
     public static class Not_empty extends RecyclerView.ViewHolder{
-        TextView name,flag,date;
+        TextView name,flag,date,time;
         ImageView whatsApp,Call,Message;
         public Not_empty(@NonNull View itemView) {
             super(itemView);
@@ -188,6 +229,7 @@ public class EventListAdapter extends RecyclerView.Adapter {
             whatsApp=itemView.findViewById(R.id.whatsapp);
             Call=itemView.findViewById(R.id.call);
             Message=itemView.findViewById(R.id.message);
+            time=itemView.findViewById(R.id.time);
         }
 
     }
