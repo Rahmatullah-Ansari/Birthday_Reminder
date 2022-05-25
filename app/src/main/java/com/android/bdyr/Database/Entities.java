@@ -20,6 +20,7 @@ public class Entities {
     private String category;
     @ColumnInfo(name = "Wish_Text")
     private String text;
+
     public Entities(String id, String name, String date, String number, String category, String text) {
         this.id = id;
         this.name = name;

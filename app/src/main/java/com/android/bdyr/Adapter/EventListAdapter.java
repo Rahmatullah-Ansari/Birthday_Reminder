@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -62,6 +63,7 @@ public class EventListAdapter extends RecyclerView.Adapter {
             String nam=arrayList.get(position).getName();
             String num=arrayList.get(position).getNumber();
             String dat=arrayList.get(position).getDate();
+            Log.d("date=",dat);
             String text=arrayList.get(position).getText();
             container.name.setText(nam);
             String s=dat.split(":")[1];

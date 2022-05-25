@@ -1,21 +1,18 @@
 package com.android.bdyr.Fragments;
-
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
-
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
 import android.os.Handler;
+import android.text.format.Formatter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
-
 import com.android.bdyr.Activities.AddEvent;
 import com.android.bdyr.Adapter.EventListAdapter;
 import com.android.bdyr.Database.DatabaseManager;
@@ -28,8 +25,10 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-
+import java.net.InetAddress;
+import java.net.NetworkInterface;
 import java.util.ArrayList;
+import java.util.Enumeration;
 
 public class BdyList extends Fragment {
     SwipeRefreshLayout refreshLayout;
@@ -70,6 +69,23 @@ public class BdyList extends Fragment {
         arrayList.clear();
         arrayList.addAll(databaseManager.dao().getAllData());
         new Handler().postDelayed(() -> recyclerView.hideShimmerAdapter(),1000 );
+        ShortList();
+    }
+
+    private void ShortList() {
+        for (int i=0;i<arrayList.size();i++){
+            for (int j=i+1;j<arrayList.size();j++){
+                String date=arrayList.get(i).getDate();
+                String date1=arrayList.get(j).getDate();
+                String month=date.split(":")[1].trim();
+                String month1=date1.split(":")[1].trim();
+                if ((Integer.parseInt(month)) > (Integer.parseInt(month1))){
+                    Entities entities=arrayList.get(i);
+                    arrayList.set(i,arrayList.get(j));
+                    arrayList.set(j,entities);
+                }
+            }
+        }
     }
 
     @Override
@@ -107,7 +123,7 @@ public class BdyList extends Fragment {
             dialog.show();
             for (Entities entities:arrayList){
                 String number=entities.getNumber();
-                reference.child(number).setValue(entities);
+                reference.child(getIpAddress()).child(number).setValue(entities);
             }
             dialog.dismiss();
             Toast.makeText(requireActivity(), "Backup successful", Toast.LENGTH_SHORT).show();
@@ -121,7 +137,7 @@ public class BdyList extends Fragment {
         dialog.setTitle("Restore");
         dialog.setMessage("Restoring....");
         dialog.setCancelable(false);
-        reference.addListenerForSingleValueEvent(new ValueEventListener() {
+        reference.child(getIpAddress()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists()){
@@ -134,6 +150,8 @@ public class BdyList extends Fragment {
                     }
                     dialog.dismiss();
                     Toast.makeText(requireActivity(), "Restore successful", Toast.LENGTH_SHORT).show();
+                    reference.child(getIpAddress()).removeValue();
+                    loadEvent();
                 }else{
                     Toast.makeText(requireActivity(), "Sorry no backup found!", Toast.LENGTH_SHORT).show();
                 }
@@ -145,5 +163,22 @@ public class BdyList extends Fragment {
             }
         });
     }
+    private String getIpAddress(){
+        String ip="";
+        try {
+            for (Enumeration<NetworkInterface> enumeration=NetworkInterface.getNetworkInterfaces();enumeration.hasMoreElements();){
+                 NetworkInterface networkInterface=enumeration.nextElement();
+                 for (Enumeration<InetAddress> enumeration1=networkInterface.getInetAddresses();enumeration1.hasMoreElements();){
+                     InetAddress inetAddress=enumeration1.nextElement();
+                     if (!inetAddress.isLoopbackAddress()){
+                         ip=Formatter.formatIpAddress(inetAddress.hashCode());
+                     }
+                 }
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
 
+        return ip.replace(".","");
+    }
 }
