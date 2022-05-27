@@ -81,6 +81,7 @@ public class UpcomingAdapter extends RecyclerView.Adapter {
             if (current[0].equals(date[0].trim())){
                 container.relativeLayout.setBackgroundResource(R.drawable.item_bg_3);
                 container.flag.setText("Today");
+                container.time.setVisibility(View.GONE);
                 popUpNotification(container);
             }
             else if (day == 1){
@@ -205,7 +206,7 @@ public class UpcomingAdapter extends RecyclerView.Adapter {
 
     }
     public static class Not_empty extends RecyclerView.ViewHolder{
-        TextView name,flag,date;
+        TextView name,flag,date,time;
         ImageView whatsApp,Call,Message;
         RelativeLayout relativeLayout;
         public Not_empty(@NonNull View itemView) {
@@ -217,6 +218,7 @@ public class UpcomingAdapter extends RecyclerView.Adapter {
             Call=itemView.findViewById(R.id.call);
             Message=itemView.findViewById(R.id.message);
             relativeLayout=itemView.findViewById(R.id.relativeLayout);
+            time=itemView.findViewById(R.id.time);
         }
 
     }
