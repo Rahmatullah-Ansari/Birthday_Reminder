@@ -14,6 +14,7 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.android.bdyr.Adapter.viewPagerAdapter;
+import com.android.bdyr.Counter;
 import com.android.bdyr.Fragments.BdyList;
 import com.android.bdyr.Fragments.UpcomingBdy;
 import com.android.bdyr.R;
@@ -135,5 +136,11 @@ public class HomeScreen extends AppCompatActivity {
         ConnectivityManager manager=(ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
         @SuppressLint ("MissingPermission") NetworkInfo info=manager.getActiveNetworkInfo();
         return info != null && info.isConnected();
+    }
+
+    @Override
+    protected void onStop() {
+        Counter.destroyed();
+        super.onStop();
     }
 }

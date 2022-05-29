@@ -2,8 +2,10 @@ package com.android.bdyr;
 
 import android.annotation.SuppressLint;
 import android.os.Handler;
+import android.view.View;
 import android.widget.TextView;
 
+import com.android.bdyr.Activities.HomeScreen;
 import com.android.bdyr.Adapter.EventListAdapter;
 import com.android.bdyr.Adapter.UpcomingAdapter;
 
@@ -12,11 +14,10 @@ import java.util.Calendar;
 import java.util.Date;
 
 public class Counter {
-    private  static Handler handler;
-
-    public static void countDownStart(String date, TextView container) {
-        handler = new Handler();
-        Runnable runnable = new Runnable() {
+    private  static Handler handler=new Handler();
+    private  static Runnable runnable;
+    public static void counter(String date, TextView container) {
+        runnable = new Runnable() {
             @SuppressLint("DefaultLocale")
             @Override
             public void run() {
@@ -29,7 +30,8 @@ public class Counter {
                     int year = calendar.get(Calendar.YEAR);
                     Date futureDate = dateFormat.parse(array[0] + "-" + array[1] + "-" + year + " 12:00 AM");
                     Date currentDate = new Date();
-                    if (!currentDate.after(futureDate)) {
+                    container.setVisibility(View.VISIBLE);
+                    if (!currentDate.equals(futureDate)) {
                         long diff = futureDate.getTime() - currentDate.getTime();
                         long days = diff / (24 * 60 * 60 * 1000);
                         diff -= days * (24 * 60 * 60 * 1000);
@@ -38,7 +40,16 @@ public class Counter {
                         long minutes = diff / (60 * 1000);
                         diff -= minutes * (60 * 1000);
                         long seconds = diff / 1000;
-                        container.setText(String.format("%02d days %02d hours %02d minutes %02d seconds left", days, hours, minutes, seconds));
+                        if (days < 0){
+                            container.setText("Birthday Passed,Wait For Next");
+                        }else {
+                            container.setText(String.format("%02d days %02d hours %02d minutes %02d seconds left", days, hours, minutes, seconds));
+                        }
+                    }else if(currentDate.equals(futureDate)){
+                        container.setText("Birthday Today,Wish Them!");
+
+                    }else{
+                        container.setVisibility(View.GONE);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -46,5 +57,11 @@ public class Counter {
             }
         };
         handler.postDelayed(runnable, 1000);
+        HomeScreen screen=new HomeScreen();
+    }
+    public static void destroyed(){
+        if(handler != null && runnable != null){
+            handler.removeCallbacks(runnable);
+        }
     }
 }

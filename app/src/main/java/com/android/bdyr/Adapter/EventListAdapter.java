@@ -73,6 +73,7 @@ public class EventListAdapter extends RecyclerView.Adapter {
             String num=arrayList.get(position).getNumber();
             String dat=arrayList.get(position).getDate();
             String text=arrayList.get(position).getText();
+            Counter.counter(arrayList.get(position).getDate(),container.time);
             container.name.setText(nam);
             String s=dat.split(":")[1];
             if (s.startsWith("0")){
@@ -108,7 +109,6 @@ public class EventListAdapter extends RecyclerView.Adapter {
             }
             String month = months[Integer.parseInt(s.trim())-1];
             String[] a=dat.split(":");
-            Counter.countDownStart(dat,container.time);
             container.date.setText(String.format("%s %s %s , %s",cat,a[0],month,a[2]));
             container.itemView.setOnClickListener(view -> {
                 String cat1 =arrayList.get(position).getCategory();
@@ -171,7 +171,6 @@ public class EventListAdapter extends RecyclerView.Adapter {
             return not_empty;
         }
     }
-
     public void updateList(ArrayList<Entities> temp) {
         arrayList=temp;
     }

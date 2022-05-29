@@ -11,6 +11,7 @@ import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,6 +34,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 
 public class UpcomingAdapter extends RecyclerView.Adapter {
@@ -40,6 +42,8 @@ public class UpcomingAdapter extends RecyclerView.Adapter {
     Context context;
     ArrayList<Entities> arrayList;
     int empty=0,not_empty=1;
+    Runnable runnable;
+    Handler handler=new Handler();
     String[] months;
 
     {
@@ -74,9 +78,9 @@ public class UpcomingAdapter extends RecyclerView.Adapter {
             String num=arrayList.get(position).getNumber();
             String dat=arrayList.get(position).getDate();
             String text=arrayList.get(position).getText();
+            Counter.counter(arrayList.get(position).getDate(),container.time);
             container.name.setText(nam);
             String[] date=dat.split(":");
-            Counter.countDownStart(dat,container.time);
             String[] current=getCurrentDate().split(":");
             int day=Integer.parseInt(date[0].trim())-Integer.parseInt(current[0]);
             if (current[0].equals(date[0].trim())){
@@ -127,7 +131,6 @@ public class UpcomingAdapter extends RecyclerView.Adapter {
             }
             String month = months[Integer.parseInt(s.trim())-1];
             String[] a=dat.split(":");
-
             container.date.setText(String.format("%s %s %s , %s",cat,a[0],month,a[2]));
             container.whatsApp.setOnClickListener(view -> {
                 Handlers handlers=new Handlers(context);
