@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.os.CountDownTimer;
 import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -17,14 +16,17 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.bdyr.Activities.AddEvent;
+import com.android.bdyr.Counter;
 import com.android.bdyr.Database.DatabaseManager;
 import com.android.bdyr.Database.Entities;
 import com.android.bdyr.Fragments.BdyList;
 import com.android.bdyr.Handlers;
 import com.android.bdyr.R;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 
 public class EventListAdapter extends RecyclerView.Adapter {
     Context context;
@@ -106,8 +108,8 @@ public class EventListAdapter extends RecyclerView.Adapter {
             }
             String month = months[Integer.parseInt(s.trim())-1];
             String[] a=dat.split(":");
+            Counter.countDownStart(dat,container.time);
             container.date.setText(String.format("%s %s %s , %s",cat,a[0],month,a[2]));
-            showCount(container,dat,position);
             container.itemView.setOnClickListener(view -> {
                 String cat1 =arrayList.get(position).getCategory();
                 String nam1 =arrayList.get(position).getName();
@@ -151,65 +153,6 @@ public class EventListAdapter extends RecyclerView.Adapter {
             });
         }
     }
-
-    private void showCount(Not_empty container, String EVENT_DATE_TIME, int position) {
-        try {
-            long current_date=System.currentTimeMillis();
-            long event_date=getEventDate(EVENT_DATE_TIME);
-            if (event_date > current_date){
-                long m=event_date-current_date;
-                container.time.setVisibility(View.VISIBLE);
-                Log.d("M=================", String.valueOf(m));
-                new CountDownTimer(m,1000) {
-
-                    @SuppressLint ("DefaultLocale")
-                    @Override
-                    public void onTick(long l) {
-                        long sec=l/1000;
-                        long Hours=sec/3600;
-                        long Minutes=(sec%3600)/60;
-                        long Second=(sec%3600)%60;
-                        Log.d("s=", String.valueOf(Second));
-                        Log.d("h=", String.valueOf(Hours));
-                        Log.d("m=", String.valueOf(Minutes));
-                        container.time.setText(String.format("%l,%l, %l",Hours,Minutes,Second));
-                    }
-
-                    @Override
-                    public void onFinish() {
-
-                    }
-                }.start();
-            }else{
-                //Handlers handlers=new Handlers(context);
-                //handlers.openWhatsApp(arrayList.get(position).getNumber(),arrayList.get(position).getText());
-
-                //container.time.setText("");
-                // container.time.setVisibility(View.GONE);
-            }
-        }catch (Exception x){
-            Log.d("Error ====",x.getLocalizedMessage());
-        }
-    }
-
-    private long getEventDate(String event_date_time) {
-        Calendar calendar=Calendar.getInstance();
-        String[] str=event_date_time.replace(" ","").split(":");
-        int day=Integer.parseInt(str[0]);
-        int month=Integer.parseInt(str[1]);
-        int year=Integer.parseInt(str[2]);
-        int hour=12;
-        int minutes=0;
-        int second=0;
-        calendar.set(Calendar.YEAR, year);
-        calendar.set(Calendar.MONTH, month);
-        calendar.set(Calendar.DAY_OF_MONTH, day);
-        calendar.set(Calendar.HOUR_OF_DAY, hour);
-        calendar.set(Calendar.MINUTE, minutes);
-        calendar.set(Calendar.SECOND, second);
-        return calendar.getTimeInMillis();
-    }
-
     @Override
     public int getItemCount() {
         if (arrayList.size() == 0){
@@ -220,7 +163,6 @@ public class EventListAdapter extends RecyclerView.Adapter {
             return count;
         }
     }
-
     @Override
     public int getItemViewType(int position) {
         if (count == -1){
@@ -243,7 +185,8 @@ public class EventListAdapter extends RecyclerView.Adapter {
 
     }
     public static class Not_empty extends RecyclerView.ViewHolder{
-        TextView name,flag,date,time;
+        TextView name,flag,date;
+        public TextView time;
         ImageView whatsApp,Call,Message;
         public Not_empty(@NonNull View itemView) {
             super(itemView);

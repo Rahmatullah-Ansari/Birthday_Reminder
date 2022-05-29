@@ -24,6 +24,7 @@ import androidx.core.app.NotificationManagerCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.bdyr.Activities.HomeScreen;
+import com.android.bdyr.Counter;
 import com.android.bdyr.Database.Entities;
 import com.android.bdyr.Handlers;
 import com.android.bdyr.R;
@@ -48,7 +49,6 @@ public class UpcomingAdapter extends RecyclerView.Adapter {
         this.context = context;
         this.arrayList = arrayList;
     }
-
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -76,6 +76,7 @@ public class UpcomingAdapter extends RecyclerView.Adapter {
             String text=arrayList.get(position).getText();
             container.name.setText(nam);
             String[] date=dat.split(":");
+            Counter.countDownStart(dat,container.time);
             String[] current=getCurrentDate().split(":");
             int day=Integer.parseInt(date[0].trim())-Integer.parseInt(current[0]);
             if (current[0].equals(date[0].trim())){
@@ -126,6 +127,7 @@ public class UpcomingAdapter extends RecyclerView.Adapter {
             }
             String month = months[Integer.parseInt(s.trim())-1];
             String[] a=dat.split(":");
+
             container.date.setText(String.format("%s %s %s , %s",cat,a[0],month,a[2]));
             container.whatsApp.setOnClickListener(view -> {
                 Handlers handlers=new Handlers(context);
@@ -206,7 +208,8 @@ public class UpcomingAdapter extends RecyclerView.Adapter {
 
     }
     public static class Not_empty extends RecyclerView.ViewHolder{
-        TextView name,flag,date,time;
+        TextView name,flag,date;
+        public TextView time;
         ImageView whatsApp,Call,Message;
         RelativeLayout relativeLayout;
         public Not_empty(@NonNull View itemView) {
