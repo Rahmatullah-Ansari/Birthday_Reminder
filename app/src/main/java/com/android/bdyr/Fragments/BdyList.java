@@ -2,6 +2,7 @@ package com.android.bdyr.Fragments;
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -14,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 import com.android.bdyr.Activities.AddEvent;
+import com.android.bdyr.Activities.Setting;
 import com.android.bdyr.Adapter.EventListAdapter;
 import com.android.bdyr.Database.DatabaseManager;
 import com.android.bdyr.Database.Entities;
@@ -150,7 +152,9 @@ public class BdyList extends Fragment {
                     }
                     dialog.dismiss();
                     Toast.makeText(requireActivity(), "Restore successful", Toast.LENGTH_SHORT).show();
-                    reference.child(getIpAddress()).removeValue();
+                    if (getShared(Setting.FOLDER)){
+                        reference.child(getIpAddress()).removeValue();
+                    }
                     loadEvent();
                 }else{
                     Toast.makeText(requireActivity(), "Sorry no backup found!", Toast.LENGTH_SHORT).show();
@@ -162,6 +166,10 @@ public class BdyList extends Fragment {
 
             }
         });
+    }
+    public boolean getShared(String deleteBackup) {
+        SharedPreferences sharedPreferences=requireActivity().getSharedPreferences(deleteBackup,requireActivity().MODE_PRIVATE);
+        return sharedPreferences.getBoolean(deleteBackup,false);
     }
     private String getIpAddress(){
         String ip="";

@@ -1,5 +1,4 @@
 package com.android.bdyr;
-
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -8,12 +7,9 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-
-import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
 public class Handlers implements ActivityCompat.OnRequestPermissionsResultCallback {
@@ -25,7 +21,7 @@ public class Handlers implements ActivityCompat.OnRequestPermissionsResultCallba
         this.context =context;
     }
     public  void openWhatsApp(String number,String text){
-        String url= null;
+        String url;
         try {
             url = "https://api.whatsapp.com/send?phone="+number + "&text="+ URLEncoder.encode(text,"UTF-8");
             PackageManager pm=context.getPackageManager();

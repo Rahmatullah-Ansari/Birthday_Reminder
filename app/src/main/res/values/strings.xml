@@ -8,4 +8,5 @@
     <string name="search">Search</string>
     <string name="export_event">Backup</string>
     <string name="import_event">Restore</string>
+    <string name="setting">Setting</string>
 </resources>

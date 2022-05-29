@@ -2,20 +2,27 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.android.bdyr">
-    <uses-permission android:name="android.permission.CALL_PHONE"/>
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+
+    <uses-permission android:name="android.permission.CALL_PHONE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         tools:ignore="ScopedStorage" />
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+
     <application
         android:allowBackup="true"
         android:icon="@drawable/bdy"
         android:label="@string/app_name"
+        android:requestLegacyExternalStorage="true"
         android:roundIcon="@drawable/bdy"
         android:supportsRtl="true"
-        android:requestLegacyExternalStorage="true"
         android:theme="@style/Theme.BDYR"
         tools:ignore="AllowBackup">
+        <activity
+            android:name=".Activities.Setting"
+            android:label="Setting"
+            android:exported="false" />
         <activity
             android:name=".Activities.AddEvent"
             android:exported="false" />
@@ -32,13 +39,15 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <provider
-            android:authorities="com.android.bdyr.Activities.HomeScreen.provider"
             android:name="androidx.core.content.FileProvider"
+            android:authorities="com.android.bdyr.Activities.HomeScreen.provider"
             android:exported="false"
             android:grantUriPermissions="true">
-            <meta-data android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/path_provider"/>
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/path_provider" />
         </provider>
     </application>
 

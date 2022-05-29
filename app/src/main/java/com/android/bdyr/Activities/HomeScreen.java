@@ -5,6 +5,7 @@ import androidx.appcompat.widget.SearchView;
 import androidx.viewpager.widget.ViewPager;
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -17,9 +18,6 @@ import com.android.bdyr.Fragments.BdyList;
 import com.android.bdyr.Fragments.UpcomingBdy;
 import com.android.bdyr.R;
 import com.android.bdyr.databinding.ActivityHomeScreenBinding;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-
 public class HomeScreen extends AppCompatActivity {
     ActivityHomeScreenBinding binding;
     com.android.bdyr.Adapter.viewPagerAdapter viewPagerAdapter;
@@ -108,6 +106,9 @@ public class HomeScreen extends AppCompatActivity {
                 break;
             case R.id.importEvent:
                 RestoreEvent();
+                break;
+            case R.id.setting:
+                startActivity(new Intent(HomeScreen.this,Setting.class));
                 break;
         }
         return super.onOptionsItemSelected(item);
