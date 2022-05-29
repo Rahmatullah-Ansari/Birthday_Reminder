@@ -20,9 +20,12 @@
         android:theme="@style/Theme.BDYR"
         tools:ignore="AllowBackup">
         <activity
-            android:name=".Activities.Setting"
-            android:label="Setting"
+            android:name=".Activities.About"
             android:exported="false" />
+        <activity
+            android:name=".Activities.Setting"
+            android:exported="false"
+            android:label="Setting" />
         <activity
             android:name=".Activities.AddEvent"
             android:exported="false" />

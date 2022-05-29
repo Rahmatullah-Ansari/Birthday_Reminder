@@ -13,4 +13,6 @@
         android:title="@string/import_event"/>
     <item android:title="@string/setting"
         android:id="@+id/setting"/>
+    <item android:title="About"
+        android:id="@+id/about"/>
 </menu>

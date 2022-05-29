@@ -111,6 +111,9 @@ public class HomeScreen extends AppCompatActivity {
             case R.id.setting:
                 startActivity(new Intent(HomeScreen.this,Setting.class));
                 break;
+            case R.id.about:
+                startActivity(new Intent(HomeScreen.this,About.class));
+                break;
         }
         return super.onOptionsItemSelected(item);
     }
