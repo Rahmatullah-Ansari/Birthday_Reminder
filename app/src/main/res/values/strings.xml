@@ -1,10 +1,9 @@
 <resources>
-    <string name="app_name">BDYR</string>
+    <string name="app_name">Birthday Reminder</string>
     <string name="birthday_reminder">Birthday Reminder</string>
     <string name="crazy_programmer">Ashi and Rahmatullah</string>
     <string name="by">By</string>
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="search">Search</string>
     <string name="export_event">Backup</string>
     <string name="import_event">Restore</string>

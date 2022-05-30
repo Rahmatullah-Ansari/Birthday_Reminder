@@ -1,8 +1,10 @@
 package com.android.bdyr.Fragments;
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -10,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import android.os.Handler;
 import android.text.format.Formatter;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -170,20 +173,8 @@ public class BdyList extends Fragment {
     }
     private String getIpAddress(){
         String ip="";
-        try {
-            for (Enumeration<NetworkInterface> enumeration=NetworkInterface.getNetworkInterfaces();enumeration.hasMoreElements();){
-                 NetworkInterface networkInterface=enumeration.nextElement();
-                 for (Enumeration<InetAddress> enumeration1=networkInterface.getInetAddresses();enumeration1.hasMoreElements();){
-                     InetAddress inetAddress=enumeration1.nextElement();
-                     if (!inetAddress.isLoopbackAddress()){
-                         ip=Formatter.formatIpAddress(inetAddress.hashCode());
-                     }
-                 }
-            }
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-
+        WifiManager manager= (WifiManager) requireActivity().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        ip=Formatter.formatIpAddress(manager.getConnectionInfo().getIpAddress());
         return ip.replace(".","");
     }
 }

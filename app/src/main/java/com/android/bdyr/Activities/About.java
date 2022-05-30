@@ -17,6 +17,7 @@ public class About extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding=ActivityAboutBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        getSupportActionBar().hide();
         textView=binding.version;
         try {
             PackageInfo info=getPackageManager().getPackageInfo(getPackageName(),0);

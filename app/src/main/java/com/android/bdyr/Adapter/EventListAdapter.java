@@ -73,7 +73,7 @@ public class EventListAdapter extends RecyclerView.Adapter {
             String num=arrayList.get(position).getNumber();
             String dat=arrayList.get(position).getDate();
             String text=arrayList.get(position).getText();
-            Counter.counter(arrayList.get(position).getDate(),container.time);
+            Counter.counter(arrayList.get(position).getDate(),container.time,arrayList.get(position).getCategory());
             container.name.setText(nam);
             String s=dat.split(":")[1];
             if (s.startsWith("0")){

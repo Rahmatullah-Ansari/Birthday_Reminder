@@ -6,8 +6,6 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.android.bdyr.Activities.HomeScreen;
-import com.android.bdyr.Adapter.EventListAdapter;
-import com.android.bdyr.Adapter.UpcomingAdapter;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -16,7 +14,7 @@ import java.util.Date;
 public class Counter {
     private  static Handler handler=new Handler();
     private  static Runnable runnable;
-    public static void counter(String date, TextView container) {
+    public static void counter(String date, TextView container, String category) {
         runnable = new Runnable() {
             @SuppressLint("DefaultLocale")
             @Override
@@ -41,12 +39,12 @@ public class Counter {
                         diff -= minutes * (60 * 1000);
                         long seconds = diff / 1000;
                         if (days < 0){
-                            container.setText("Birthday Passed,Wait For Next");
+                            container.setText(category+" Passed,Wait For Next");
                         }else {
                             container.setText(String.format("%02d days %02d hours %02d minutes %02d seconds left", days, hours, minutes, seconds));
                         }
                     }else if(currentDate.equals(futureDate)){
-                        container.setText("Birthday Today,Wish Them!");
+                        container.setText(category+" Today,Wish Them!");
 
                     }else{
                         container.setVisibility(View.GONE);
