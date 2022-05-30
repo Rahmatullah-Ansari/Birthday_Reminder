@@ -155,8 +155,7 @@ public class BdyList extends Fragment {
                     }
                     dialog.dismiss();
                     Toast.makeText(requireActivity(), "Restore successful", Toast.LENGTH_SHORT).show();
-                    Setting setting=new Setting();
-                    if (setting.getShared(setting.FOLDER)){
+                    if (getShared(Setting.FOLDER)){
                         reference.child(getIpAddress()).removeValue();
                     }
                     loadEvent();
@@ -170,6 +169,10 @@ public class BdyList extends Fragment {
 
             }
         });
+    }
+    public boolean getShared(String deleteBackup) {
+        SharedPreferences sharedPreferences=requireActivity().getSharedPreferences(deleteBackup,requireActivity().MODE_PRIVATE);
+        return sharedPreferences.getBoolean(deleteBackup,false);
     }
     private String getIpAddress(){
         String ip="";
