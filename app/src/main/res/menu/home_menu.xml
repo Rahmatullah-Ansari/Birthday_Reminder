@@ -15,4 +15,6 @@
         android:id="@+id/setting"/>
     <item android:title="About"
         android:id="@+id/about"/>
+    <item android:id="@+id/share"
+        android:title="Share Apk"/>
 </menu>

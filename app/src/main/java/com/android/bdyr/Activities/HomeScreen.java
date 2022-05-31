@@ -114,6 +114,12 @@ public class HomeScreen extends AppCompatActivity {
             case R.id.about:
                 startActivity(new Intent(HomeScreen.this,About.class));
                 break;
+            case R.id.share:
+                Intent intent1 = new Intent("android.intent.action.SEND");
+                intent1.setType("text/plain");
+                intent1.putExtra("android.intent.extra.SUBJECT", "Birthday Reminder");
+                intent1.putExtra("android.intent.extra.TEXT", "This Birthday Reminder App Help You To Remind Birthday as well as Anniversary Of Your Relatives\n To Download This App Click The Link Given Below :-\n"+"https://tinyurl.com/2jldbxn7");
+                break;
         }
         return super.onOptionsItemSelected(item);
     }
