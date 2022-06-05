@@ -74,7 +74,11 @@ public class BdyList extends Fragment {
         arrayList.clear();
         arrayList.addAll(databaseManager.dao().getAllData());
         new Handler().postDelayed(() -> recyclerView.hideShimmerAdapter(),1000 );
-        ShortList();
+        try {
+            ShortList();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     private void ShortList() {
@@ -178,6 +182,7 @@ public class BdyList extends Fragment {
         String ip="";
         WifiManager manager= (WifiManager) requireActivity().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         ip=Formatter.formatIpAddress(manager.getConnectionInfo().getIpAddress());
+        Toast.makeText(requireActivity(), "IP==="+ip, Toast.LENGTH_SHORT).show();
         return ip.replace(".","");
     }
 }

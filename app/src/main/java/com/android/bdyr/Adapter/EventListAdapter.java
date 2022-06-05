@@ -75,41 +75,46 @@ public class EventListAdapter extends RecyclerView.Adapter {
             String text=arrayList.get(position).getText();
             Counter.counter(arrayList.get(position).getDate(),container.time,arrayList.get(position).getCategory());
             container.name.setText(nam);
-            String s=dat.split(":")[1];
-            if (s.startsWith("0")){
-                switch (s) {
-                    case "01":
-                        s = "1";
-                        break;
-                    case "02":
-                        s = "2";
-                        break;
-                    case "03":
-                        s = "3";
-                        break;
-                    case "04":
-                        s = "4";
-                        break;
-                    case "05":
-                        s = "5";
-                        break;
-                    case "06":
-                        s = "6";
-                        break;
-                    case "07":
-                        s = "7";
-                        break;
-                    case "08":
-                        s = "8";
-                        break;
-                    case "09":
-                        s = "9";
-                        break;
+            String s = null;
+            try {
+                s=dat.split(":")[1];
+                if (s.startsWith("0")){
+                    switch (s) {
+                        case "01":
+                            s = "1";
+                            break;
+                        case "02":
+                            s = "2";
+                            break;
+                        case "03":
+                            s = "3";
+                            break;
+                        case "04":
+                            s = "4";
+                            break;
+                        case "05":
+                            s = "5";
+                            break;
+                        case "06":
+                            s = "6";
+                            break;
+                        case "07":
+                            s = "7";
+                            break;
+                        case "08":
+                            s = "8";
+                            break;
+                        case "09":
+                            s = "9";
+                            break;
+                    }
                 }
+                String month = months[Integer.parseInt(s.trim())-1];
+                String[] a=dat.split(":");
+                container.date.setText(String.format("%s %s %s , %s",cat,a[0],month,a[2]));
+            }catch (Exception e){
+                e.printStackTrace();
             }
-            String month = months[Integer.parseInt(s.trim())-1];
-            String[] a=dat.split(":");
-            container.date.setText(String.format("%s %s %s , %s",cat,a[0],month,a[2]));
             container.itemView.setOnClickListener(view -> {
                 String cat1 =arrayList.get(position).getCategory();
                 String nam1 =arrayList.get(position).getName();

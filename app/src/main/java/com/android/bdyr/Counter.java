@@ -38,10 +38,10 @@ public class Counter {
                         long minutes = diff / (60 * 1000);
                         diff -= minutes * (60 * 1000);
                         long seconds = diff / 1000;
-                        if (days < 0){
-                            container.setText(category+" Passed,Wait For Next");
-                        }else {
+                        if (days > 0){
                             container.setText(String.format("%02d days %02d hours %02d minutes %02d seconds left", days, hours, minutes, seconds));
+                        }else {
+                            container.setText(category+" passed,wait for next");
                         }
                     }else if(currentDate.equals(futureDate)){
                         container.setText(category+" Today,Wish Them!");
