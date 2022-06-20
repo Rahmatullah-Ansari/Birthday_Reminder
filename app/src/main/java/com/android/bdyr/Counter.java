@@ -2,6 +2,7 @@ package com.android.bdyr;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Handler;
 import android.view.View;
 import android.widget.TextView;
@@ -59,6 +60,16 @@ public class Counter {
         };
         handler.postDelayed(runnable, 1000);
         HomeScreen screen=new HomeScreen();
+    }
+    public static void ServiceCaller(Intent intent,Context context,int hour,int minutes,String date,Date current){
+        context.stopService(intent);
+        Integer alarmHour = hour;
+        Integer alarmMinute = minutes;
+        intent.putExtra("alarmHour", alarmHour);
+        intent.putExtra("alarmMinute", alarmMinute);
+        intent.putExtra("fDate",date);
+        intent.putExtra("cDate",current.toString());
+        context.startService(intent);
     }
     public static void destroyed(){
         if(handler != null && runnable != null){

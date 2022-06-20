@@ -21,6 +21,7 @@ import com.android.bdyr.Database.DatabaseManager;
 import com.android.bdyr.Database.Entities;
 import com.android.bdyr.Fragments.BdyList;
 import com.android.bdyr.Handlers;
+import com.android.bdyr.MyService;
 import com.android.bdyr.R;
 
 import java.text.SimpleDateFormat;
@@ -74,6 +75,13 @@ public class EventListAdapter extends RecyclerView.Adapter {
             String dat=arrayList.get(position).getDate();
             String text=arrayList.get(position).getText();
             Counter.counter(arrayList.get(position).getDate(),container.time,arrayList.get(position).getCategory(),context);
+            final Intent intent1 = new Intent(context, MyService.class);
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    Counter.ServiceCaller(intent1,context,Calendar.getInstance().getTime().getHours(),Calendar.getInstance().getTime().getMinutes(),arrayList.get(position).getDate(),new Date());
+                }
+            },1000);
             container.name.setText(nam);
             String s = null;
             try {

@@ -19,6 +19,8 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.BDYR"
         tools:ignore="AllowBackup">
+        
+        <service android:name=".MyService"/>
         <activity
             android:name=".Activities.About"
             android:exported="false" />

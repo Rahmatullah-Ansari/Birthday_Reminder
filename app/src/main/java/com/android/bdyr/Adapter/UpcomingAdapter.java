@@ -28,12 +28,14 @@ import com.android.bdyr.Activities.HomeScreen;
 import com.android.bdyr.Counter;
 import com.android.bdyr.Database.Entities;
 import com.android.bdyr.Handlers;
+import com.android.bdyr.MyService;
 import com.android.bdyr.R;
 
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 
 public class UpcomingAdapter extends RecyclerView.Adapter {
@@ -66,7 +68,7 @@ public class UpcomingAdapter extends RecyclerView.Adapter {
 
     @SuppressLint ({ "SetTextI18n", "DefaultLocale" })
     @Override
-    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, @SuppressLint("RecyclerView") int position) {
         if (holder.getClass() == Empty.class){
             Empty container=(Empty) holder;
         }else if (holder.getClass() == Not_empty.class){
@@ -78,6 +80,8 @@ public class UpcomingAdapter extends RecyclerView.Adapter {
             String dat=arrayList.get(position).getDate();
             String text=arrayList.get(position).getText();
             Counter.counter(arrayList.get(position).getDate(),container.time, arrayList.get(position).getCategory(),context);
+            final Intent intent = new Intent(context, MyService.class);
+            new Handler().postDelayed(() -> Counter.ServiceCaller(intent,context, Calendar.getInstance().getTime().getHours(),Calendar.getInstance().getTime().getMinutes(),arrayList.get(position).getDate(),new Date()),1000);
             container.name.setText(nam);
             String[] date=dat.split(":");
             String[] current=getCurrentDate().split(":");
