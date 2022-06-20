@@ -77,7 +77,7 @@ public class UpcomingAdapter extends RecyclerView.Adapter {
             String num=arrayList.get(position).getNumber();
             String dat=arrayList.get(position).getDate();
             String text=arrayList.get(position).getText();
-            Counter.counter(arrayList.get(position).getDate(),container.time, arrayList.get(position).getCategory());
+            Counter.counter(arrayList.get(position).getDate(),container.time, arrayList.get(position).getCategory(),context);
             container.name.setText(nam);
             String[] date=dat.split(":");
             String[] current=getCurrentDate().split(":");

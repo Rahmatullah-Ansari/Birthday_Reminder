@@ -34,7 +34,8 @@ public class UpcomingBdy extends Fragment {
         arrayList=new ArrayList<>();
         adapter=new UpcomingAdapter(requireActivity(),arrayList);
         recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(requireActivity()));
+        LinearLayoutManager layoutManager=new LinearLayoutManager(requireActivity());
+        recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
         loadUpcomingEvent();
         refreshLayout.setOnRefreshListener(() -> {
@@ -92,4 +93,11 @@ public class UpcomingBdy extends Fragment {
         adapter.notifyDataSetChanged();
     }
 
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser){
+            loadUpcomingEvent();
+        }
+    }
 }

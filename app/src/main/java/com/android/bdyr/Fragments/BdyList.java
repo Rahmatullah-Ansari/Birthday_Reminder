@@ -54,10 +54,10 @@ public class BdyList extends Fragment {
         arrayList= new ArrayList<>();
         adapter=new EventListAdapter(requireActivity(),arrayList,BdyList.this);
         recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(requireActivity()));
+        LinearLayoutManager layoutManager=new LinearLayoutManager(requireActivity());
+        recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
         databaseManager=DatabaseManager.getINSTANCE(requireActivity());
-        loadEvent();
         refreshLayout.setOnRefreshListener(() -> {
             loadEvent();
             refreshLayout.setRefreshing(false);
@@ -184,5 +184,13 @@ public class BdyList extends Fragment {
         ip=Formatter.formatIpAddress(manager.getConnectionInfo().getIpAddress());
         Toast.makeText(requireActivity(), "IP==="+ip, Toast.LENGTH_SHORT).show();
         return ip.replace(".","");
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser){
+            loadEvent();
+        }
     }
 }

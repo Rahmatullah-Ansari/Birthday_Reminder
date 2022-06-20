@@ -1,9 +1,11 @@
 package com.android.bdyr;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.os.Handler;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.bdyr.Activities.HomeScreen;
 
@@ -14,7 +16,7 @@ import java.util.Date;
 public class Counter {
     private  static Handler handler=new Handler();
     private  static Runnable runnable;
-    public static void counter(String date, TextView container, String category) {
+    public static void counter(String date, TextView container, String category, Context context) {
         runnable = new Runnable() {
             @SuppressLint("DefaultLocale")
             @Override
@@ -38,10 +40,11 @@ public class Counter {
                         long minutes = diff / (60 * 1000);
                         diff -= minutes * (60 * 1000);
                         long seconds = diff / 1000;
-                        if (days > 0){
+                        if (days >0){
                             container.setText(String.format("%02d days %02d hours %02d minutes %02d seconds left", days, hours, minutes, seconds));
-                        }else {
-                            container.setText(category+" passed,wait for next");
+                        }else{
+                            days+=365;
+                            container.setText(String.format("%02d days %02d hours %02d minutes %02d seconds left", days, hours, minutes, seconds));
                         }
                     }else if(currentDate.equals(futureDate)){
                         container.setText(category+" Today,Wish Them!");
