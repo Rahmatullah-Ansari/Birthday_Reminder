@@ -4,11 +4,8 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
-import android.os.Looper;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
-
 import com.android.bdyr.Activities.HomeScreen;
 
 import java.text.SimpleDateFormat;
@@ -16,11 +13,14 @@ import java.util.Calendar;
 import java.util.Date;
 
 public class Counter {
-    private  static Handler handler=new Handler();
+    private  static Handler handler;
+    Counter(){
+        handler=new Handler();
+    }
     private  static Runnable runnable;
     public static void DayCounter(String date, TextView container, String category, Context context) {
         runnable = new Runnable() {
-            @SuppressLint("DefaultLocale")
+            @SuppressLint({"DefaultLocale", "SetTextI18n"})
             @Override
             public void run() {
 
@@ -46,8 +46,8 @@ public class Counter {
                         if (days >0){
                             container.setText(String.format("%02d days %02d hours %02d minutes %02d seconds left", days, hours, minutes, seconds));
                         }else{
-                            days+=365;
-                            container.setText(String.format("%02d days %02d hours %02d minutes %02d seconds left", days, hours, minutes, seconds));
+                            container.setText(category+" Today,Wish Them!");
+                            //container.setText(String.format("%02d days %02d hours %02d minutes %02d seconds left", days, hours, minutes, seconds));
                         }
                     }else if(currentDate.equals(futureDate)){
                         container.setText(category+" Today,Wish Them!");

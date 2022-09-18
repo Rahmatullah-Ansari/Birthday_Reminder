@@ -127,9 +127,14 @@ public class BdyList extends Fragment {
         ProgressDialog dialog=new ProgressDialog(requireActivity());
         dialog.setTitle("Backup");
         dialog.setMessage("Backing Up....");
-        dialog.setCancelable(false);
+        dialog.setCancelable(true);
+        dialog.show();
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         if (arrayList.size() > 0){
-            dialog.show();
             for (Entities entities:arrayList){
                 String number=entities.getNumber();
                 reference.child(getIpAddress()).child(number).setValue(entities);
@@ -137,6 +142,7 @@ public class BdyList extends Fragment {
             dialog.dismiss();
             Toast.makeText(requireActivity(), "Backup successful", Toast.LENGTH_SHORT).show();
         }else{
+            dialog.dismiss();
             Toast.makeText(requireActivity(), "Nothing is to backup!", Toast.LENGTH_SHORT).show();
         }
     }
@@ -145,12 +151,18 @@ public class BdyList extends Fragment {
         ProgressDialog dialog=new ProgressDialog(requireActivity());
         dialog.setTitle("Restore");
         dialog.setMessage("Restoring....");
-        dialog.setCancelable(false);
+        dialog.setCancelable(true);
+        dialog.show();
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         reference.child(getIpAddress()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists()){
-                    dialog.show();
+
                     arrayList.clear();
                     DatabaseManager manager=DatabaseManager.getINSTANCE(requireActivity());
                     for (DataSnapshot dataSnapshot:snapshot.getChildren()){
@@ -164,6 +176,7 @@ public class BdyList extends Fragment {
                     }
                     loadEvent();
                 }else{
+                    dialog.dismiss();
                     Toast.makeText(requireActivity(), "Sorry no backup found!", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -182,7 +195,7 @@ public class BdyList extends Fragment {
         String ip="";
         WifiManager manager= (WifiManager) requireActivity().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         ip=Formatter.formatIpAddress(manager.getConnectionInfo().getIpAddress());
-        Toast.makeText(requireActivity(), "IP==="+ip, Toast.LENGTH_SHORT).show();
+        //Toast.makeText(requireActivity(), "IP==="+ip, Toast.LENGTH_SHORT).show();
         return ip.replace(".","");
     }
 
