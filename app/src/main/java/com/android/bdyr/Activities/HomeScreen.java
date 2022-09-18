@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -89,13 +90,16 @@ public class HomeScreen extends AppCompatActivity {
 
     private void filter(String text) {
         int count=binding.viewPager.getCurrentItem();
-        if (count == 0){
-            UpcomingBdy fragment=(UpcomingBdy) binding.viewPager.getAdapter().instantiateItem(binding.viewPager,count);
-            fragment.search(text);
-        }else if (count == 1){
-            BdyList fragment=(BdyList) binding.viewPager.getAdapter().instantiateItem(binding.viewPager,count);
-            fragment.search(text);
-        }
+
+            if (count == 0){
+                UpcomingBdy fragment=(UpcomingBdy) binding.viewPager.getAdapter().instantiateItem(binding.viewPager,count);
+                fragment.search(text);
+            }else if (count == 1){
+                BdyList fragment=(BdyList) binding.viewPager.getAdapter().instantiateItem(binding.viewPager,count);
+                fragment.search(text);
+            }
+
+
     }
 
     @SuppressLint ("NonConstantResourceId")

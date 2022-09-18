@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
+import android.os.Looper;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -17,11 +18,12 @@ import java.util.Date;
 public class Counter {
     private  static Handler handler=new Handler();
     private  static Runnable runnable;
-    public static void counter(String date, TextView container, String category, Context context) {
+    public static void DayCounter(String date, TextView container, String category, Context context) {
         runnable = new Runnable() {
             @SuppressLint("DefaultLocale")
             @Override
             public void run() {
+
                 handler.postDelayed(this, 1000);
                 try {
                     @SuppressLint("SimpleDateFormat") SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy hh:mm a");
@@ -55,6 +57,7 @@ public class Counter {
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
+
                 }
             }
         };

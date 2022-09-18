@@ -12,6 +12,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +21,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.recyclerview.widget.RecyclerView;
@@ -37,6 +39,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+
 
 public class UpcomingAdapter extends RecyclerView.Adapter {
     int count=0;
@@ -66,97 +69,104 @@ public class UpcomingAdapter extends RecyclerView.Adapter {
         }
     }
 
-    @SuppressLint ({ "SetTextI18n", "DefaultLocale" })
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    @SuppressLint({"SetTextI18n", "DefaultLocale", "LongLogTag"})
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, @SuppressLint("RecyclerView") int position) {
         if (holder.getClass() == Empty.class){
             Empty container=(Empty) holder;
         }else if (holder.getClass() == Not_empty.class){
-            Not_empty container=(Not_empty) holder;
-            container.flag.setVisibility(View.VISIBLE);
-            String cat=arrayList.get(position).getCategory();
-            String nam=arrayList.get(position).getName();
-            String num=arrayList.get(position).getNumber();
-            String dat=arrayList.get(position).getDate();
-            String text=arrayList.get(position).getText();
-            Counter.counter(arrayList.get(position).getDate(),container.time, arrayList.get(position).getCategory(),context);
-            final Intent intent = new Intent(context, MyService.class);
-            new Handler().postDelayed(() -> Counter.ServiceCaller(intent,context, Calendar.getInstance().getTime().getHours(),Calendar.getInstance().getTime().getMinutes(),arrayList.get(position).getDate(),new Date()),1000);
-            container.name.setText(nam);
-            String[] date=dat.split(":");
-            String[] current=getCurrentDate().split(":");
-            int day=Integer.parseInt(date[0].trim())-Integer.parseInt(current[0]);
-            if (current[0].equals(date[0].trim())){
-                container.relativeLayout.setBackgroundResource(R.drawable.item_bg_3);
-                container.flag.setText("Today");
-                container.time.setVisibility(View.GONE);
-                popUpNotification(container);
-            }
-            else if (day == 1){
-                container.relativeLayout.setBackgroundResource(R.drawable.item_bg);
-                container.flag.setText("Tomorrow");
-            }
-            else {
-                container.relativeLayout.setBackgroundResource(R.drawable.item_bg);
-                container.flag.setText(String.format("%d days to go",day-1));
-            }
-            String s=date[1];
-            if (s.startsWith("0")){
-                switch (s) {
-                    case "01":
-                        s = "1";
-                        break;
-                    case "02":
-                        s = "2";
-                        break;
-                    case "03":
-                        s = "3";
-                        break;
-                    case "04":
-                        s = "4";
-                        break;
-                    case "05":
-                        s = "5";
-                        break;
-                    case "06":
-                        s = "6";
-                        break;
-                    case "07":
-                        s = "7";
-                        break;
-                    case "08":
-                        s = "8";
-                        break;
-                    case "09":
-                        s = "9";
-                        break;
+            try {
+                Not_empty container=(Not_empty) holder;
+                container.flag.setVisibility(View.VISIBLE);
+                String cat=arrayList.get(position).getCategory();
+                String nam=arrayList.get(position).getName();
+                String num=arrayList.get(position).getNumber();
+                String dat=arrayList.get(position).getDate();
+                String text=arrayList.get(position).getText();
+                Counter.DayCounter(arrayList.get(position).getDate(),container.time, arrayList.get(position).getCategory(),context);
+                final Intent intent = new Intent(context, MyService.class);
+                new Handler().postDelayed(() -> Counter.ServiceCaller(intent,context, Calendar.getInstance().getTime().getHours(),Calendar.getInstance().getTime().getMinutes(),arrayList.get(position).getDate(),new Date()),1000);
+                container.name.setText(nam);
+                String[] date=dat.split(":");
+                String[] current=getCurrentDate().split(":");
+                int day=Integer.parseInt(date[0].trim())-Integer.parseInt(current[0]);
+                if (current[0].equals(date[0].trim())){
+                    container.relativeLayout.setBackgroundResource(R.drawable.item_bg_3);
+                    container.flag.setText("Today");
+                    container.time.setVisibility(View.GONE);
+                    popUpNotification(container);
                 }
+                else if (day == 1){
+                    container.relativeLayout.setBackgroundResource(R.drawable.item_bg);
+                    container.flag.setText("Tomorrow");
+                }
+                else {
+                    container.relativeLayout.setBackgroundResource(R.drawable.item_bg);
+                    container.flag.setText(String.format("%d days to go",day-1));
+                }
+                String s=date[1];
+                if (s.startsWith("0")){
+                    switch (s) {
+                        case "01":
+                            s = "1";
+                            break;
+                        case "02":
+                            s = "2";
+                            break;
+                        case "03":
+                            s = "3";
+                            break;
+                        case "04":
+                            s = "4";
+                            break;
+                        case "05":
+                            s = "5";
+                            break;
+                        case "06":
+                            s = "6";
+                            break;
+                        case "07":
+                            s = "7";
+                            break;
+                        case "08":
+                            s = "8";
+                            break;
+                        case "09":
+                            s = "9";
+                            break;
+                    }
+                }
+                String month = months[Integer.parseInt(s.trim())-1];
+                String[] a=dat.split(":");
+                container.date.setText(String.format("%s %s %s , %s",cat,a[0],month,a[2]));
+                container.whatsApp.setOnClickListener(view -> {
+                    Handlers handlers=new Handlers(context);
+                    handlers.openWhatsApp(arrayList.get(position).getNumber(),arrayList.get(position).getText());
+                });
+                container.Call.setOnClickListener(view -> {
+                    Handlers handlers=new Handlers(context);
+                    handlers.makeCall(arrayList.get(position).getNumber());
+                });
+                container.Message.setOnClickListener(view -> {
+                    Handlers handlers=new Handlers(context);
+                    handlers.openMessenger(arrayList.get(position).getNumber(),arrayList.get(position).getText());
+                });
+            }catch (Exception e){
+                Log.e("UpcomingAdapter:Error ===",e.getLocalizedMessage());
             }
-            String month = months[Integer.parseInt(s.trim())-1];
-            String[] a=dat.split(":");
-            container.date.setText(String.format("%s %s %s , %s",cat,a[0],month,a[2]));
-            container.whatsApp.setOnClickListener(view -> {
-                Handlers handlers=new Handlers(context);
-                handlers.openWhatsApp(arrayList.get(position).getNumber(),arrayList.get(position).getText());
-            });
-            container.Call.setOnClickListener(view -> {
-                Handlers handlers=new Handlers(context);
-                handlers.makeCall(arrayList.get(position).getNumber());
-            });
-            container.Message.setOnClickListener(view -> {
-                Handlers handlers=new Handlers(context);
-                handlers.openMessenger(arrayList.get(position).getNumber(),arrayList.get(position).getText());
-            });
+
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     private void popUpNotification(Not_empty holder) {
         String name=arrayList.get(holder.getAdapterPosition()).getName();
         NotificationCompat.Builder builder=new NotificationCompat.Builder(context, String.valueOf(123));
         Intent intent=new Intent(context, HomeScreen.class);
         TaskStackBuilder stackBuilder=TaskStackBuilder.create(context);
         stackBuilder.addNextIntentWithParentStack(intent);
-        PendingIntent pendingIntent=stackBuilder.getPendingIntent(0,PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pendingIntent=stackBuilder.getPendingIntent(0,PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
         builder.setContentIntent(pendingIntent);
         builder.setSmallIcon(R.drawable.bdy);
         builder.setContentTitle(name + " birthday today,wish them!");
