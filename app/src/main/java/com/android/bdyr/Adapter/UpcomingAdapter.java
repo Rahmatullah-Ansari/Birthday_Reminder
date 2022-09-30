@@ -76,7 +76,7 @@ public class UpcomingAdapter extends RecyclerView.Adapter {
         if (holder.getClass() == Empty.class){
             Empty container=(Empty) holder;
         }else if (holder.getClass() == Not_empty.class){
-            try {
+            if (arrayList.size()>0){
                 Not_empty container=(Not_empty) holder;
                 container.flag.setVisibility(View.VISIBLE);
                 String cat=arrayList.get(position).getCategory();
@@ -152,10 +152,7 @@ public class UpcomingAdapter extends RecyclerView.Adapter {
                     Handlers handlers=new Handlers(context);
                     handlers.openMessenger(arrayList.get(position).getNumber(),arrayList.get(position).getText());
                 });
-            }catch (Exception e){
-                Log.e("UpcomingAdapter:Error ===",e.getLocalizedMessage());
             }
-
         }
     }
 

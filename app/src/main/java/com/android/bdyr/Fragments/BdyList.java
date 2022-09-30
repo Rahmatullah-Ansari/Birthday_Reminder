@@ -18,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 import com.android.bdyr.Activities.AddEvent;
+import com.android.bdyr.Activities.HomeScreen;
 import com.android.bdyr.Activities.Setting;
 import com.android.bdyr.Adapter.EventListAdapter;
 import com.android.bdyr.Database.DatabaseManager;
@@ -30,10 +31,16 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
+import java.io.Console;
+import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
+import java.net.SocketException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Enumeration;
+import java.util.List;
 
 public class BdyList extends Fragment {
     SwipeRefreshLayout refreshLayout;
@@ -129,11 +136,7 @@ public class BdyList extends Fragment {
         dialog.setMessage("Backing Up....");
         dialog.setCancelable(true);
         dialog.show();
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+
         if (arrayList.size() > 0){
             for (Entities entities:arrayList){
                 String number=entities.getNumber();
@@ -153,11 +156,6 @@ public class BdyList extends Fragment {
         dialog.setMessage("Restoring....");
         dialog.setCancelable(true);
         dialog.show();
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
         reference.child(getIpAddress()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -193,12 +191,23 @@ public class BdyList extends Fragment {
     }
     private String getIpAddress(){
         String ip="";
-        WifiManager manager= (WifiManager) requireActivity().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-        ip=Formatter.formatIpAddress(manager.getConnectionInfo().getIpAddress());
-        //Toast.makeText(requireActivity(), "IP==="+ip, Toast.LENGTH_SHORT).show();
-        return ip.replace(".","");
+        try {
+            for (Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en.hasMoreElements();) {
+                NetworkInterface intf = en.nextElement();
+                for (Enumeration<InetAddress> enumIpAddr = intf.getInetAddresses(); enumIpAddr.hasMoreElements();) {
+                    InetAddress inetAddress = enumIpAddr.nextElement();
+                    if (!inetAddress.isLoopbackAddress() && inetAddress instanceof Inet4Address) {
+                        ip=inetAddress.getHostAddress();
+                    }
+                }
+            }
+        } catch (SocketException ex) {
+            ex.printStackTrace();
+        }
+        String finalIp=ip.replace(".","").trim();
+        Log.d("ip ====", finalIp);
+        return finalIp;
     }
-
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);

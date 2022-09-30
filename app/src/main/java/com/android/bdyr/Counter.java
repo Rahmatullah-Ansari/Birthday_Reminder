@@ -13,10 +13,8 @@ import java.util.Calendar;
 import java.util.Date;
 
 public class Counter {
-    private  static Handler handler;
-    Counter(){
+    private  static Handler
         handler=new Handler();
-    }
     private  static Runnable runnable;
     public static void DayCounter(String date, TextView container, String category, Context context) {
         runnable = new Runnable() {
@@ -34,7 +32,7 @@ public class Counter {
                     Date futureDate = dateFormat.parse(array[0] + "-" + array[1] + "-" + year + " 12:00 AM");
                     Date currentDate = new Date();
                     container.setVisibility(View.VISIBLE);
-                    if (!currentDate.equals(futureDate)) {
+                    if (!currentDate.after(futureDate)) {
                         long diff = futureDate.getTime() - currentDate.getTime();
                         long days = diff / (24 * 60 * 60 * 1000);
                         diff -= days * (24 * 60 * 60 * 1000);
@@ -43,12 +41,7 @@ public class Counter {
                         long minutes = diff / (60 * 1000);
                         diff -= minutes * (60 * 1000);
                         long seconds = diff / 1000;
-                        if (days >0){
-                            container.setText(String.format("%02d days %02d hours %02d minutes %02d seconds left", days, hours, minutes, seconds));
-                        }else{
-                            container.setText(category+" Today,Wish Them!");
-                            //container.setText(String.format("%02d days %02d hours %02d minutes %02d seconds left", days, hours, minutes, seconds));
-                        }
+                        container.setText(String.format("%02d days %02d hours %02d minutes %02d seconds left", days, hours, minutes, seconds));
                     }else if(currentDate.equals(futureDate)){
                         container.setText(category+" Today,Wish Them!");
 

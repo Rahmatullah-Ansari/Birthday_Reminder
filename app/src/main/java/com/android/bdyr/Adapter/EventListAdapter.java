@@ -69,7 +69,7 @@ public class EventListAdapter extends RecyclerView.Adapter {
             Empty container1=(Empty) holder;
             container1.textView.setText("No event are stored now!\nAdd new event by clicking + button\nor pull down to refresh!");
         }else if (holder.getClass() == Not_empty.class){
-            try {
+            if (arrayList.size()>0){
                 Not_empty container=(Not_empty) holder;
                 container.flag.setVisibility(View.GONE);
                 String cat=arrayList.get(position).getCategory();
@@ -77,7 +77,8 @@ public class EventListAdapter extends RecyclerView.Adapter {
                 String num=arrayList.get(position).getNumber();
                 String dat=arrayList.get(position).getDate();
                 String text=arrayList.get(position).getText();
-                Counter.DayCounter(arrayList.get(position).getDate(), container.time, arrayList.get(position).getCategory(), context);
+                container.time.setVisibility(View.GONE);
+                //Counter.DayCounter(arrayList.get(position).getDate(), container.time, arrayList.get(position).getCategory(), context);
                 final Intent intent1 = new Intent(context, MyService.class);
                 new Handler().postDelayed(() -> Counter.ServiceCaller(intent1,context,Calendar.getInstance().getTime().getHours(),Calendar.getInstance().getTime().getMinutes(),arrayList.get(position).getDate(),new Date()),1000);
                 container.name.setText(nam);
@@ -162,10 +163,7 @@ public class EventListAdapter extends RecyclerView.Adapter {
                             }).setNegativeButton("NO", (dialogInterface, i) -> dialogInterface.dismiss()).show();
                     return false;
                 });
-            }catch (Exception E){
-                Log.e("EventListAdapter : Error === ",E.getLocalizedMessage());
             }
-
         }
     }
     @Override
